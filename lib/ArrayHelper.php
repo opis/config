@@ -14,7 +14,7 @@ class ArrayHelper
     public function get($name, $default = null)
     {
         $config = &$this->config;
-        $path = explode($name);
+        $path = explode('.', $name);
         
         foreach($path as &$key)
         {
@@ -32,7 +32,7 @@ class ArrayHelper
     public function set($name, $value)
     {
         $config = &$this->config;
-        $path = explode($name);
+        $path = explode('.', $name);
         $last = array_pop($path);
         
         foreach($path as &$key)
@@ -55,7 +55,7 @@ class ArrayHelper
     public function delete($name)
     {
         $config = &$this->config;
-        $path = explode($name);
+        $path = explode('.', $name);
         $last = array_pop($path);
         
         foreach($path as &$key)
