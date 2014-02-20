@@ -29,7 +29,7 @@ class Config
     public function __construct(StorageInterface $loader)
     {
         $this->loader = $loader;
-        $config = new ArrayHelper($this->loader->load());
+        $this->config = new ArrayHelper($this->loader->load());
     }
     
     public function write($name, $value)
