@@ -104,6 +104,11 @@ class StorageCollection implements Serializable
         return $this->instances[$storage];
     }
     
+    public function __invoke($storage = null)
+    {
+        return $this->get($storage);
+    }
+    
     public function serialize()
     {
         SerializableClosure::enterContext();
