@@ -1,6 +1,6 @@
 {
     "name": "opis/config",
-    "description": "Opis Config",
+    "description": "Simple config library",
     "keywords": ["opis", "config"],
     "homepage": "http://opis.io",
     "license": "Apache-2.0",
@@ -11,7 +11,8 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "opis/closure": "1.2.*"
     },
     "autoload": {
         "psr-4": {"Opis\\Config\\": "lib/"}

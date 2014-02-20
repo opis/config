@@ -18,42 +18,27 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Config;
+namespace Opis\Config\Storage;
 
-class Config
+use Opis\Config\StorageInterface;
+
+class StandardFile implements StorageInterface
 {
-    protected $loader;
     
-    protected $config;
+    protected $file;
     
-    public function __construct(StorageInterface $loader)
+    public function __construct($file)
     {
-        $this->loader = $loader;
-        $config = new ArrayHelper($this->loader->load());
+        $this->file = $file;
     }
     
-    public function write($name, $value)
+    public function load()
     {
-        return $this->config->set($name, $value);
+        return unserialize(file_get_contents($this->file));
     }
     
-    public function read($name, $default = null)
+    public function save(array $config)
     {
-        return $this->config->get($name, $default);
-    }
-    
-    public function has($name)
-    {
-        return $this->config->has($name);
-    }
-    
-    public function delete($name)
-    {
-        return $this->config->delete($name);
-    }
-    
-    public function save()
-    {
-        return $this->loader->save($this->config->toArray());
+        file_put_contents($this->file, serialize($config));
     }
 }
