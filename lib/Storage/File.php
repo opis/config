@@ -50,7 +50,7 @@ class File implements StorageInterface
     
     protected function configFile($key)
     {
-        return $this->path . '/' . $this->prefix . $key . $this->extension;
+        return $this->path . '/' . $this->prefix . md5($key) . $this->extension;
     }
     
     protected function readConfig($file)
