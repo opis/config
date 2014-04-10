@@ -22,38 +22,32 @@ namespace Opis\Config;
 
 class Config
 {
-    protected $loader;
     
-    protected $config;
+    protected $storage;
     
-    public function __construct(StorageInterface $loader)
+    public function __construct(StorageInterface $storage)
     {
-        $this->loader = $loader;
-        $this->config = new ArrayHelper($this->loader->load());
+        $this->storage = $storage;
     }
     
     public function write($name, $value)
     {
-        return $this->config->set($name, $value);
+        return $this->storage->write($name, $value);
     }
     
     public function read($name, $default = null)
     {
-        return $this->config->get($name, $default);
+        return $this->storage->red($name, $default);
     }
     
     public function has($name)
     {
-        return $this->config->has($name);
+        return $this->storage->has($name);
     }
     
     public function delete($name)
     {
-        return $this->config->delete($name);
+        return $this->storage->delete($name);
     }
     
-    public function save()
-    {
-        return $this->loader->save($this->config->toArray());
-    }
 }

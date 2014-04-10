@@ -32,7 +32,8 @@ class ArrayHelper
     public function get($name, $default = null)
     {
         $config = &$this->config;
-        $path = explode('.', $name);
+        
+        $path = is_array($name) ? $name : explode('.', $name);
         
         foreach($path as &$key)
         {
@@ -50,7 +51,7 @@ class ArrayHelper
     public function set($name, $value)
     {
         $config = &$this->config;
-        $path = explode('.', $name);
+        $path = is_array($name) ? $name : explode('.', $name);
         $last = array_pop($path);
         
         foreach($path as &$key)
@@ -67,13 +68,13 @@ class ArrayHelper
     
     public function has($name)
     {
-        return null !== $this->get($name);
+        return $this !== $this->get($name, $this);
     }
     
     public function delete($name)
     {
         $config = &$this->config;
-        $path = explode('.', $name);
+        $path = is_array($name) ? $name : explode('.', $name);
         $last = array_pop($path);
         
         foreach($path as &$key)

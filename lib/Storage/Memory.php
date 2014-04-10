@@ -21,6 +21,7 @@
 namespace Opis\Config\Storage;
 
 use Opis\Config\StorageInterface;
+use Opis\Config\ArrayHelper;
 
 class Memory implements StorageInterface
 {
@@ -29,16 +30,26 @@ class Memory implements StorageInterface
     
     public function __construct($config = array())
     {
-        $this->config = $config;
+        $this->config = new ArrayHelper($config);
     }
     
-    public function load()
+    public function write($name, $value)
     {
-        return $this->config;
+        return $this->config->set($name, $value);
     }
     
-    public function save(array $config)
+    public function read($name, $default = null)
     {
-        $this->config = $config;
+        return $this->config->get($name, $default);
+    }
+    
+    public function has($name)
+    {
+        return $this->config->has($name);
+    }
+    
+    public function delete($name)
+    {
+        return $this->config->delete($name);
     }
 }

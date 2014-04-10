@@ -22,7 +22,12 @@ namespace Opis\Config;
 
 interface StorageInterface
 {
-    public function load();
+    public function write($name, $value);
     
-    public function save(array $config);
+    public function read($name, $default = null);
+    
+    public function has($name);
+    
+    public function delete($name);
+    
 }

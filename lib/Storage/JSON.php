@@ -20,25 +20,21 @@
 
 namespace Opis\Config\Storage;
 
-use Opis\Config\StorageInterface;
-
-class JSONFile implements StorageInterface
+class JSON extends File
 {
     
-    protected $file;
-    
-    public function __construct($file)
+    public function __construct($path, $prefix = '')
     {
-        $this->file = $file;
+        parent::__construct($path, $prefix, '.json');
     }
     
-    public function load()
+    protected function readConfig($file)
     {
-        return json_decode(file_get_contents($this->file), true);
+        return json_decode(file_get_contents($file), true);
     }
     
-    public function save(array $config)
+    protected function writeConfig($file, array $config)
     {
-        file_put_contents($this->file, json_encode($config));
+        file_put_contents($file, json_encode($config));
     }
 }
