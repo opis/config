@@ -37,7 +37,7 @@ class Config
     
     public function read($name, $default = null)
     {
-        return $this->storage->red($name, $default);
+        return $this->storage->read($name, $default);
     }
     
     public function has($name)
