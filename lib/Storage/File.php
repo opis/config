@@ -20,8 +20,9 @@
 
 namespace Opis\Config\Storage;
 
-use Opis\Config\StorageInterface;
+use RuntimeException;
 use Opis\Config\ArrayHelper;
+use Opis\Config\StorageInterface;
 
 class File implements StorageInterface
 {
