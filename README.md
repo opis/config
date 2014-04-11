@@ -14,7 +14,7 @@ This library is available on [Packagist](https://packagist.org/packages/opis/con
 ```json
 {
     "require": {
-        "opis/config": "1.0.*"
+        "opis/config": "1.1.*"
     }
 }
 ```
@@ -25,12 +25,12 @@ This library is available on [Packagist](https://packagist.org/packages/opis/con
 
 ```php
 use \Opis\Config\StorageCollection;
-use \Opis\Config\Storage\StandardFile;
+use \Opis\Config\Storage\File as FileStorage;
 
 $config = new StorageCollection();
 
 $config->add('connections', function(){
-    return new StandardFile('/path/to/config.file');
+    return new FileStorage('/path/to/writeable/config/folder');
 });
 
 $config->get('connections')->write('mysql', array(
@@ -50,9 +50,6 @@ $config('connections')->write('mysql.database', 'OtherDatabase');
 
 //Add new
 $config('connections')->write('mysql.host', 'localhost');
-
-//Save config
-$config('connections')->save();
 
 //Serialization
 $config = unserialize(serialize($config));
