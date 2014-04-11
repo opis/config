@@ -34,23 +34,32 @@ class File implements StorageInterface
     
     protected $cache = array();
     
-    public function __construct($path, $prefix = '', $extension = '.conf')
+    public function __construct($path, $prefix = '', $extension = 'conf')
     {
         $this->path = rtrim($path, '/');
-        $this->prefix = $prefix;
-        $this->extension = $extension;
+        $this->prefix = trim($prefix, '.');
+        $this->extension = trim($extension, '.');
+        
+        if($this->prefix !== '')
+        {
+            $this->prefix += '.';
+        }
+        
+        if($this->extension !== '')
+        {
+            $this->extension = '.' . $this->extension;
+        }
         
         if(file_exists($this->path) === false || is_readable($this->path) === false || is_writable($this->path) === false)
         {
             throw new RuntimeException(vsprintf("%s(): Config directory ('%s') is not writable.", array(__METHOD__, $this->path)));
         }
         
-        $this->helper = new ArrayHelper();
     }
     
     protected function configFile($key)
     {
-        return $this->path . '/' . $this->prefix . md5($key) . $this->extension;
+        return $this->path . '/' . $this->prefix . $key . $this->extension;
     }
     
     protected function readConfig($file)
