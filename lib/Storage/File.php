@@ -42,7 +42,7 @@ class File implements StorageInterface
         
         if($this->prefix !== '')
         {
-            $this->prefix += '.';
+            $this->prefix .= '.';
         }
         
         if($this->extension !== '')
