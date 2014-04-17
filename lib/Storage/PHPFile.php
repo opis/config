@@ -37,9 +37,7 @@ class PHPFile extends File
     {
         file_put_contents(
             $file,
-            "<?php\n\rreturn "
-              . preg_replace('/\s=>\s(\n\s+)array\s\(\n/', " => array (\n", var_export($config, TRUE))
-              . ';'
+            "<?php\n\rreturn " . preg_replace('/\s=>\s(\n\s+)array\s\(\n/', " => array (\n", var_export($config, TRUE)) . ';'
         );
     }
 }
