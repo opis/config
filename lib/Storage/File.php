@@ -140,11 +140,10 @@ class File implements StorageInterface
     {
         $path = explode('.', $name);
         $key = $path[0];
+        $file = $this->configFile($key);
         
         if(count($path) === 1)
         {
-            $file = $this->configFile($key);
-            
             if(file_exists($file))
             {
                 if(unlink($file))
@@ -160,9 +159,7 @@ class File implements StorageInterface
         }
         
         if(!isset($this->cache[$key]))
-        {
-            $file = $this->configFile($key);
-            
+        {   
             if(!file_exists($file))
             {
                 return false;
@@ -171,7 +168,13 @@ class File implements StorageInterface
             $this->cache[$key] = new ArrayHelper($this->readConfig($file));
         }
         
-        return $this->cache[$key]->delete($path);
+        if($this->cache[$key]->delete($path))
+        {
+            $this->writeConfig($file, $this->cache[$key]->toArray());
+            return true;
+        }
+        
+        return false;
     }
     
 }
