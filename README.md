@@ -58,3 +58,43 @@ $config = unserialize(serialize($config));
 print $config('connections')->read('mysql.database'); //> OtherDatabase
 print $config('connections')->read('mysql.host'); //> localhost
 ```
+
+###Dual storage example
+
+Dual storage allows you to simultaneously write into two storages.
+Reading is made from the first storage but in case of fail the second storage will be checked.
+
+```php
+use \Opis\Config\StorageCollection;
+use \Opis\Config\Storage\PHPFile as PHPFileStorage;
+use \Opis\Config\Storage\DualStorage;
+use \MyVendor\DatabaseStorage;
+
+$config = new StorageCollection();
+
+$config->add('roles', function(){
+    return new DualStorage(
+      new DatabaseStorage(),
+      new PHPFileStorage('/path/to/writeable/config/folder'),
+      true // enable auto-sync on read failure
+    );
+});
+
+$roles_conf = $config->get('roles');
+
+// The config will be written in database and file.
+$roles_conf->write('admin', array('permissions' => 'all'));
+
+// First read is on database, if no results tries to read from file.
+print $roles_conf->read('admin.permissions'); //> all
+
+// Delete the config record from database and comment the write part ($roles_conf->write(...)) 
+// from this code.
+// Re-running code, you should still get the result from file and also the record 
+// will be in database because auto-sync on read is enabled.
+
+```
+
+
+
+
