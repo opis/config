@@ -66,15 +66,20 @@ Reading is made from the first storage but in case of fail the second storage wi
 
 ```php
 use \Opis\Config\StorageCollection;
+use \Opis\Config\Storage\Database as DatabaseStorage;
 use \Opis\Config\Storage\PHPFile as PHPFileStorage;
 use \Opis\Config\Storage\DualStorage;
-use \MyVendor\DatabaseStorage;
+use \Opis\Database\Connection;
 
 $config = new StorageCollection();
 
-$config->add('roles', function(){
+$connection = Connection::mysql('user', 'password')
+                        ->database('mydatabase')
+                        ->charset('utf8');
+
+$config->add('roles', function() use ($connection) {
     return new DualStorage(
-      new DatabaseStorage(),
+      new DatabaseStorage($connection, 'configuration'),
       new PHPFileStorage('/path/to/writeable/config/folder'),
       true // enable auto-sync on read failure
     );
