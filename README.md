@@ -69,6 +69,7 @@ use \Opis\Config\StorageCollection;
 use \Opis\Config\Storage\Database as DatabaseStorage;
 use \Opis\Config\Storage\PHPFile as PHPFileStorage;
 use \Opis\Config\Storage\DualStorage;
+use \Opis\Database\Connection;
 
 $config = new StorageCollection();
 
