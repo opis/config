@@ -21,46 +21,23 @@
 namespace Opis\Config\Storage;
 
 use Opis\Config\StorageInterface;
-use Opis\Database\Connection;
-use Opis\Database\Database as OpisDatabase;
 use Opis\Config\ArrayHelper;
-use PDOException;
+use MongoCollection;
 
-class Database implements StorageInterface
+class Mongo implements StorageInterface
 {
+    /** @var \MongoCollectio Collection. */
+    protected $mongo;
     
-    /** @var \Opis\Database\Database Database. */
-    protected $db;
-    
-    /** @var string Cache table. */
-    protected $table;
-    
-    
-    /** @var array Column map. */
+    /** @var array Columns mapping. */
     protected $columns;
     
-    /** @var array Config cache. */
+    /** @var array Cache. */
     protected $cache = array();
     
-    /**
-     * Constructor.
-     *
-     * Database storage requires a table with two columns: name and data.
-     * It is recommended that name column to be unique and data column blob.
-     * You can change columns name by passing the third parrameter.
-     *
-     * @param \Opis\Database\Connection $connection Database connection
-     *
-     * @param string $table Table name
-     *
-     * @param array $columns    Columns mapping
-     * 
-     */
-    
-    public function __construct(Connection $connection, $table, array $columns = array())
+    public function __construct(MongoCollection $mongo, array $columns = array())
     {
-        $this->db = new OpisDatabase($connection);
-        $this->table = $table;
+        $this->mongo = $mongo;
         $this->columns = $columns + array(
           'name' => 'name',
           'data' => 'data',
@@ -69,26 +46,18 @@ class Database implements StorageInterface
     
     protected function checkCache($name)
     {
-        
         if (!isset($this->cache[$name]))
         {
-            try
-            {
-                $config = $this->db->from($this->table)
-                            ->where($this->columns['name'], $name)
-                            ->select()
-                            ->first();
-                if (!$config)
-                {
-                    return false;
-                }
-                
-                $this->cache[$name] = new ArrayHelper(unserialize($config[$this->columns['data']]));
-            }
-            catch (PDOException $e)
+            $config = $this->mongo->findOne(array(
+                $this->columns['name'] => $name,
+            ));
+            
+            if (!$config)
             {
                 return false;
             }
+            
+            $this->cache[$name] = new ArrayHelper(unserialize($config[$this->columns['data']]));
         }
         
         return true;
@@ -96,63 +65,37 @@ class Database implements StorageInterface
     
     protected function updateRecord($name)
     {
-        try
-        {
-            return (bool) $this->db->update($this->table)
-                                ->where($this->columns['name'], $name)
-                                ->set(array(
-                                    $this->columns['data'] => serialize($this->cache[$name]->toArray()),
-                                ))
-                                ->execute();
-        }
-        catch (PDOException $e)
-        {
-            return false;
-        }
-    }
-    
-    protected function insertRecord($name)
-    {
-        try
-        {
-            return (bool) $this->db->insert($this->table)
-                                ->values(array(
-                                    $this->columns['name'] => $name,
-                                    $this->columns['data'] => serialize($this->cache[$name]->toArray()),
-                                ))
-                                ->execute();
-        }
-        catch (PDOException $e)
-        {
-            return false;
-        }
+        return (bool) $this->mongo->update(
+            array(
+                $this->columns['name'] => $name,
+            ),
+            array(
+                '$set' => array(
+                    $this->columns['name'] => $name,
+                    $this->columns['data'] => serialize($this->cache[$name]->toArray()),
+                )
+            ),
+            array(
+                'upsert' => true,
+            )
+        );
     }
     
     protected function deleteRecord($name)
     {
-        try
-        {
-            return (bool) $this->db->from($this->table)
-                                ->where($this->columns['name'], $name)
-                                ->delete();
-        }
-        catch (PDOException $e)
-        {
-            return false;
-        }
+        return (bool) $this->mongo->remove(array(
+           $this->columns['name'] => $name, 
+        ));
     }
-    
     
     public function write($name, $value)
     {
         $path = explode('.', $name);
         $key = array_shift($path);
-        
-        $exists = $this->checkCache($key);
-        
+
         if ($path)
         {
-            if (!$exists)
+            if (!$this->checkCache($key))
             {
                 $this->cache[$key] = new ArrayHelper();
             }
@@ -163,7 +106,7 @@ class Database implements StorageInterface
             $this->cache[$key] = new ArrayHelper($value);
         }
         
-        return $exists ? $this->updateRecord($key) : $this->insertRecord($key);
+        return $this->updateRecord($key);
     }
     
     public function read($name, $default = null)
@@ -210,4 +153,5 @@ class Database implements StorageInterface
         
         return $this->deleteRecord($key);
     }
+    
 }
