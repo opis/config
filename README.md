@@ -14,7 +14,7 @@ This library is available on [Packagist](https://packagist.org/packages/opis/con
 ```json
 {
     "require": {
-        "opis/config": "1.1.*"
+        "opis/config": "1.2.*"
     }
 }
 ```
