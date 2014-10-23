@@ -25,51 +25,54 @@ use Opis\Config\StorageInterface;
 class DualStorage implements StorageInterface
 {
   
-  protected $primary;
+    protected $primary;
+    
+    protected $secondary;
+    
+    protected $dummy;
+    
+    protected $autoSync;
   
-  protected $secondary;
-  
-  protected $dummy;
-  
-  protected $autoSync;
-  
-  public function __construct(StorageInterface $primary, StorageInterface $secondary, $autosync = true)
-  {
-    $this->primary = $primary;
-    $this->secondary = $secondary;
-    $this->autoSync = $autosync;
-    $this->dummy = spl_object_hash($this) . ':' . uniqid();
-  }
-  
-  public function write($name, $value)
-  {
-    $this->primary->write($name, $value);
-    $this->secondary->write($name, $value);
-  }
-  
-  public function read($name, $default = null)
-  {
-    $val = $this->primary->read($name, $this->dummy);
-    if ($val === $this->dummy)
+    public function __construct(StorageInterface $primary, StorageInterface $secondary, $autosync = true)
     {
-      $val = $this->secondary->read($name, $default);
-      if ($this->autoSync)
-      {
-        $this->primary->write($name, $val);
-      }
+        $this->primary = $primary;
+        $this->secondary = $secondary;
+        $this->autoSync = $autosync;
+        $this->dummy = spl_object_hash($this) . ':' . uniqid();
     }
-    return $val;
-  }
   
-  public function has($name)
-  {
-    return $this->primary->has($name) || $this->secondary->has($name);
-  }
-  
-  public function delete($name)
-  {
-    $p = $this->primary->delete($name);
-    $s = $this->secondary->delete($name);
-    return $p && $s;
-  }
+    public function write($name, $value)
+    {
+        $this->primary->write($name, $value);
+        $this->secondary->write($name, $value);
+    }
+    
+    public function read($name, $default = null)
+    {
+        $val = $this->primary->read($name, $this->dummy);
+        
+        if ($val === $this->dummy)
+        {
+            $val = $this->secondary->read($name, $default);
+            
+            if ($this->autoSync)
+            {
+                $this->primary->write($name, $val);
+            }
+        }
+        
+        return $val;
+    }
+    
+    public function has($name)
+    {
+        return $this->primary->has($name) || $this->secondary->has($name);
+    }
+    
+    public function delete($name)
+    {
+        $p = $this->primary->delete($name);
+        $s = $this->secondary->delete($name);
+        return $p && $s;
+    }
 }
