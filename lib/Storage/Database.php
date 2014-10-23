@@ -20,11 +20,11 @@
 
 namespace Opis\Config\Storage;
 
+use PDOException;
+use Opis\Config\ArrayHelper;
 use Opis\Config\StorageInterface;
 use Opis\Database\Connection;
 use Opis\Database\Database as OpisDatabase;
-use Opis\Config\ArrayHelper;
-use PDOException;
 
 class Database implements StorageInterface
 {
@@ -74,10 +74,12 @@ class Database implements StorageInterface
         {
             try
             {
-                $config = $this->db->from($this->table)
-                            ->where($this->columns['name'], $name)
-                            ->select()
-                            ->first();
+                $config = $this->db
+                               ->from($this->table)
+                               ->where($this->columns['name'])->eq($name)
+                               ->select()
+                               ->fetchAssoc()
+                               ->first();
                 if (!$config)
                 {
                     return false;
@@ -98,12 +100,12 @@ class Database implements StorageInterface
     {
         try
         {
-            return (bool) $this->db->update($this->table)
-                                ->where($this->columns['name'], $name)
-                                ->set(array(
+            return (bool) $this->db
+                               ->update($this->table)
+                               ->where($this->columns['name'])->eq($name)
+                               ->set(array(
                                     $this->columns['data'] => serialize($this->cache[$name]->toArray()),
-                                ))
-                                ->execute();
+                               ));
         }
         catch (PDOException $e)
         {
@@ -115,12 +117,12 @@ class Database implements StorageInterface
     {
         try
         {
-            return (bool) $this->db->insert($this->table)
-                                ->values(array(
+            return (bool) $this->db
+                               ->insert(array(
                                     $this->columns['name'] => $name,
                                     $this->columns['data'] => serialize($this->cache[$name]->toArray()),
-                                ))
-                                ->execute();
+                               ))
+                               ->into($this->table);
         }
         catch (PDOException $e)
         {
@@ -132,9 +134,10 @@ class Database implements StorageInterface
     {
         try
         {
-            return (bool) $this->db->from($this->table)
-                                ->where($this->columns['name'], $name)
-                                ->delete();
+            return (bool) $this->db
+                               ->from($this->table)
+                               ->where($this->columns['name'])->eq($name)
+                               ->delete();
         }
         catch (PDOException $e)
         {
