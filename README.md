@@ -4,12 +4,27 @@ Opis Config
 [![Latest Unstable Version](https://poser.pugx.org/opis/config/v/unstable.png)](//packagist.org/packages/opis/config)
 [![License](https://poser.pugx.org/opis/config/license.png)](https://packagist.org/packages/opis/config)
 
-Simple config library
+Configuration manager
 ---------------------
+**Opis Config** is a configuration management library, with support for multiple backend storages,
+that provides developers an API which allows them to work with configurations in a standardised way,
+no matter where the configurations are stored.
 
-###Installation
+The supported backend storages are: Database, File, JSON, Mongo, MongoArray, PHPFile, Memory, DualStorage.
 
-This library is available on [Packagist](https://packagist.org/packages/opis/config) and can be installed using [Composer](http://getcomposer.org)
+### License
+
+**Opis Config** is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0). 
+
+### Requirements
+
+* PHP 5.3.* or higher
+* [Opis Closure](http://www.opis.io/closure) 1.3.*
+* [Opis Database](http://www.opis.io/database) 2.0.* (for Database storage)
+
+### Installation
+
+This library is available on [Packagist](https://packagist.org/packages/opis/config) and can be installed using [Composer](http://getcomposer.org).
 
 ```json
 {
@@ -19,87 +34,16 @@ This library is available on [Packagist](https://packagist.org/packages/opis/con
 }
 ```
 
-###Documentation
-
-###Examples
-
-```php
-use \Opis\Config\StorageCollection;
-use \Opis\Config\Storage\File as FileStorage;
-
-$config = new StorageCollection();
-
-$config->add('connections', function(){
-    return new FileStorage('/path/to/writeable/config/folder');
-});
-
-$config->get('connections')->write('mysql', array(
-    'database' => 'MyDatabase',
-    'user' => 'doe',
-    'password' => 'secret',
-));
-
-print $config->get('connections')->read('mysql.password'); //> secret
-
-//Shorter syntax
-print $config('connections')->read('mysql.user'); //> doe
-print $config('connections')->read('mysql.database'); //> MyDatabase
-
-//Alter
-$config('connections')->write('mysql.database', 'OtherDatabase');
-
-//Add new
-$config('connections')->write('mysql.host', 'localhost');
-
-//Serialization
-$config = unserialize(serialize($config));
-
-
-print $config('connections')->read('mysql.database'); //> OtherDatabase
-print $config('connections')->read('mysql.host'); //> localhost
-```
-
-###Dual storage example
-
-Dual storage allows you to simultaneously write into two storages.
-Reading is made from the first storage but in case of fail the second storage will be checked.
+If you are unable to use [Composer](http://getcomposer.org) you can download the
+[tar.gz](https://github.com/opis/config/archive/1.4.1.tar.gz) or the [zip](https://github.com/opis/config/archive/1.4.1.zip)
+archive file, extract the content of the archive and include de `autoload.php` file into your project. 
 
 ```php
-use \Opis\Config\StorageCollection;
-use \Opis\Config\Storage\Database as DatabaseStorage;
-use \Opis\Config\Storage\PHPFile as PHPFileStorage;
-use \Opis\Config\Storage\DualStorage;
-use \Opis\Database\Connection;
 
-$config = new StorageCollection();
-
-$connection = Connection::mysql('user', 'password')
-                        ->database('mydatabase')
-                        ->charset('utf8');
-
-$config->add('roles', function() use ($connection) {
-    return new DualStorage(
-      new DatabaseStorage($connection, 'configuration'),
-      new PHPFileStorage('/path/to/writeable/config/folder'),
-      true // enable auto-sync on read failure
-    );
-});
-
-$roles_conf = $config->get('roles');
-
-// The config will be written in database and file.
-$roles_conf->write('admin', array('permissions' => 'all'));
-
-// First read is on database, if no results tries to read from file.
-print $roles_conf->read('admin.permissions'); //> all
-
-// Delete the config record from database and comment the write part ($roles_conf->write(...)) 
-// from this code.
-// Re-running code, you should still get the result from file and also the record 
-// will be in database because auto-sync on read is enabled.
+require_once 'path/to/config-1.4.1/autoload.php';
 
 ```
 
+### Documentation
 
-
-
+Examples and documentation can be found at http://opis.io/config .
