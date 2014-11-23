@@ -1,5 +1,9 @@
 CHANGELOG
 -------------
+### Opis Config 1.4.0, 2014.11.23
+
+* Added autoload file
+
 ### Opis Config 1.4.0, 2014.10.23
 
 * Updated `opis/database` library dependency to version `2.0.*`
