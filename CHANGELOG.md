@@ -1,8 +1,9 @@
 CHANGELOG
 -------------
-### Opis Config 1.5.0
+### Opis Config 1.5.0, 2015.07.31
 
 * Updated `opis/closure` library dependency to version `~2.0.*`
+* Updated `opis/database` library dependency to version `~2.0.*`
 
 ### Opis Config 1.4.0, 2014.11.23
 
