@@ -1,5 +1,11 @@
 CHANGELOG
 -------------
+### Opis Config 1.6.0, 2015.07.31
+
+* Updated `opis/closure` library dependency to version `^2.0.0`
+* Updated `opis/database` library dependency to version `^2.1.1`
+* Removed `branch-alias` property from the `composer.json` file
+
 ### Opis Config 1.5.0, 2015.07.31
 
 * Updated `opis/closure` library dependency to version `~2.0.*`
