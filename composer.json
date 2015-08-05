@@ -1,6 +1,6 @@
 {
     "name": "opis/config",
-    "description": "Simple config library",
+    "description": "A configuration management library with support for multiple backend storages",
     "keywords": ["opis", "config"],
     "homepage": "http://opis.io",
     "license": "Apache-2.0",
