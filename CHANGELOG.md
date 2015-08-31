@@ -1,5 +1,11 @@
 CHANGELOG
 -------------
+### Opis Cache 2.0.0, 2015.08.31
+
+* Removed `Opis\Config\StorageCollection` class
+* `Opis\Cache\Storage\Database` was moved into the `opis/storages` package
+* Removed `opis\database` and `opis\closure` dependencies
+
 ### Opis Config 1.6.0, 2015.07.31
 
 * Updated `opis/closure` library dependency to version `^2.0.0`
