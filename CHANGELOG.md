@@ -3,7 +3,7 @@ CHANGELOG
 ### v2.0.0, 2015.08.31
 
 * Removed `Opis\Config\StorageCollection` class
-* `Opis\Cache\Storage\Database` was moved into the `opis/storages` package
+* `Opis\Config\Storage\Database` was moved into the `opis/storages` package
 * Removed `opis\database` and `opis\closure` dependencies
 
 ### v1.6.0, 2015.07.31
