@@ -1,5 +1,13 @@
 CHANGELOG
 -------------
+### v2.1.0, 2015.10.08
+
+* Changed the way `File`, `JSON` and `PHPFile` storages behaves when the specified directory doesn't exits and now
+they try to create it first, before throwing an exception.
+* Added `fileWrite` method to `Opis\Config\Storage\File` class.
+* Modified the `writeConfig` method for `File`, `JSON` and `PHPFile` storages. It uses now the newly added
+`fileWrite` method to save configurations.
+
 ### v2.0.0, 2015.08.31
 
 * Removed `Opis\Config\StorageCollection` class

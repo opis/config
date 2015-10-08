@@ -25,7 +25,7 @@ class PHPFile extends File
     
     public function __construct($path, $prefix = '')
     {
-        parent::__construct($path, $prefix, '.php');
+        parent::__construct($path, $prefix, 'php');
     }
     
     protected function readConfig($file)
@@ -35,9 +35,7 @@ class PHPFile extends File
     
     protected function writeConfig($file, array $config)
     {
-        file_put_contents(
-            $file,
-            "<?php\n\rreturn " . preg_replace('/\s=>\s(\n\s+)array\s\(\n/', " => array (\n", var_export($config, TRUE)) . ';'
-        );
+        $config = "<?php\n\rreturn " . preg_replace('/\s=>\s(\n\s+)array\s\(\n/', " => array (\n", var_export($config, TRUE)) . ';';
+        $this->fileWrite($file, $config);
     }
 }

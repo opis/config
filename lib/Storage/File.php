@@ -50,16 +50,37 @@ class File implements StorageInterface
             $this->extension = '.' . $this->extension;
         }
         
-        if(file_exists($this->path) === false || is_readable($this->path) === false || is_writable($this->path) === false)
+        if(!is_dir($this->path) && !mkdir($this->path, 0775, true))
         {
-            throw new RuntimeException(vsprintf("%s(): Config directory ('%s') is not writable.", array(__METHOD__, $this->path)));
+            throw new RuntimeException(vsprintf("Config directory ('%s') does not exist.", array($this->path)));
         }
         
+        if(!is_writable($this->path) || !is_readable($this->path))
+        {
+            throw new RuntimeException(vsprintf("Config directory ('%s') is not writable or readable.", array($this->path)));
+        }
+        
+    }
+    
+    public function __destruct()
+    {
+        $this->flush();
     }
     
     protected function configFile($key)
     {
         return $this->path . '/' . $this->prefix . $key . $this->extension;
+    }
+    
+    protected function fileWrite(&$file, &$data)
+    {
+        $fh = fopen($file, 'c');
+        flock($fh, LOCK_EX);
+        chmod($file, 0774);
+        ftruncate($fh, 0);
+        fwrite($fh, $data);
+        flock($fh, LOCK_UN);
+        fclose($fh);
     }
     
     protected function readConfig($file)
@@ -69,7 +90,8 @@ class File implements StorageInterface
     
     protected function writeConfig($file, array $config)
     {
-        file_put_contents($file, serialize($config));
+        $config = serialize($config);
+        $this->fileWrite($file, $config);
     }
     
     public function write($name, $value)

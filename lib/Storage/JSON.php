@@ -25,7 +25,7 @@ class JSON extends File
     
     public function __construct($path, $prefix = '')
     {
-        parent::__construct($path, $prefix, '.json');
+        parent::__construct($path, $prefix, 'json');
     }
     
     protected function readConfig($file)
@@ -35,6 +35,7 @@ class JSON extends File
     
     protected function writeConfig($file, array $config)
     {
-        file_put_contents($file, json_encode($config));
+        $config = json_encode($config);
+        $this->fileWrite($file, $config);
     }
 }
