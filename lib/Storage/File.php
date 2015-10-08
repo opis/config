@@ -62,11 +62,6 @@ class File implements StorageInterface
         
     }
     
-    public function __destruct()
-    {
-        $this->flush();
-    }
-    
     protected function configFile($key)
     {
         return $this->path . '/' . $this->prefix . $key . $this->extension;
