@@ -1,5 +1,9 @@
 CHANGELOG
 -------------
+### v2.1.1, 2015.10.15
+
+* The `@` operator is now used with `mkdir` function in `Opis\Config\Storage\File::__construct` method
+
 ### v2.1.0, 2015.10.08
 
 * Changed the way `File`, `JSON` and `PHPFile` storages behaves when the specified directory doesn't exits and now
