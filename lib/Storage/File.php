@@ -50,7 +50,7 @@ class File implements StorageInterface
             $this->extension = '.' . $this->extension;
         }
         
-        if(!is_dir($this->path) && !mkdir($this->path, 0775, true))
+        if(!is_dir($this->path) && !@mkdir($this->path, 0775, true))
         {
             throw new RuntimeException(vsprintf("Config directory ('%s') does not exist.", array($this->path)));
         }
