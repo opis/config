@@ -31,21 +31,21 @@ This library is available on [Packagist](https://packagist.org/packages/opis/con
 ```json
 {
     "require": {
-        "opis/config": "^2.1.1"
+        "opis/config": "^2.1.2"
     }
 }
 ```
 
 If you are unable to use [Composer](http://getcomposer.org) you can download the
-[tar.gz](https://github.com/opis/config/archive/2.1.1.tar.gz) or the [zip](https://github.com/opis/config/archive/2.1.1.zip)
+[tar.gz](https://github.com/opis/config/archive/2.1.2.tar.gz) or the [zip](https://github.com/opis/config/archive/2.1.2.zip)
 archive file, extract the content of the archive and include de `autoload.php` file into your project. 
 
 ```php
 
-require_once 'path/to/config-2.1.1/autoload.php';
+require_once 'path/to/config-2.1.2/autoload.php';
 
 ```
 
 ### Documentation
 
-Examples and documentation can be found at http://opis.io/config .
+Examples and documentation can be found [here](http://opis.io/config).
