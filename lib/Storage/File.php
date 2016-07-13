@@ -69,9 +69,12 @@ class File implements StorageInterface
     
     protected function fileWrite(&$file, &$data)
     {
+        $chmod = !file_exists($file);
         $fh = fopen($file, 'c');
         flock($fh, LOCK_EX);
-        chmod($file, 0774);
+        if($chmod){
+            chmod($file, 0774);
+        }
         ftruncate($fh, 0);
         fwrite($fh, $data);
         flock($fh, LOCK_UN);
