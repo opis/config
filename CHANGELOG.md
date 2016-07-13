@@ -1,5 +1,10 @@
 CHANGELOG
--------------
+---------
+### v2.1.2, 2016.07.13
+
+* Fixed a potential bug in `Opis\Config\Storage\File::fileWrite` method
+* Added a `.gitignore` file
+
 ### v2.1.1, 2015.10.15
 
 * The `@` operator is now used with `mkdir` function in `Opis\Config\Storage\File::__construct` method
