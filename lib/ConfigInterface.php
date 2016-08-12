@@ -3,7 +3,7 @@
  * Opis Project
  * http://opis.io
  * ===========================================================================
- * Copyright 2014-2015 Marius Sarca
+ * Copyright 2014-2016 Marius Sarca
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,32 @@
 
 namespace Opis\Config;
 
-interface StorageInterface
+interface ConfigInterface
 {
-    public function write($name, $value);
-    
-    public function read($name, $default = null);
-    
-    public function has($name);
-    
-    public function delete($name);
+    /**
+     * @param string $key
+     * @param $value
+     * @return bool
+     */
+    public function write(string $key, $value) : bool;
+
+    /**
+     * @param string $key
+     * @param null $default
+     * @return mixed
+     */
+    public function read(string $key, $default = null);
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function has(string $key) : bool;
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function delete(string $key) : bool;
     
 }
