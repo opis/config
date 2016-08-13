@@ -3,7 +3,7 @@
  * Opis Project
  * http://opis.io
  * ===========================================================================
- * Copyright 2014-2015 Marius Sarca
+ * Copyright 2014-2016 Marius Sarca
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,28 @@ namespace Opis\Config\Storage;
 
 class JSON extends File
 {
-    
-    public function __construct($path, $prefix = '')
+    /**
+     * JSON constructor.
+     * @param string $path
+     * @param string $prefix
+     */
+    public function __construct(string $path, string $prefix = '')
     {
         parent::__construct($path, $prefix, 'json');
     }
-    
-    protected function readConfig($file)
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function readConfig(string $file)
     {
-        return json_decode(file_get_contents($file), true);
+        return json_decode(file_get_contents($file));
     }
-    
-    protected function writeConfig($file, array $config)
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function writeConfig(string $file, $config)
     {
         $config = json_encode($config);
         $this->fileWrite($file, $config);
