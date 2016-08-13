@@ -3,7 +3,7 @@
  * Opis Project
  * http://opis.io
  * ===========================================================================
- * Copyright 2014-2015 Marius Sarca
+ * Copyright 2014-2016 Marius Sarca
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,35 +20,51 @@
 
 namespace Opis\Config\Storage;
 
-use Opis\Config\StorageInterface;
-use Opis\Config\ArrayHelper;
+use Opis\Config\ConfigInterface;
+use Opis\Config\ConfigHelper;
 
-class Memory implements StorageInterface
+class Memory implements ConfigInterface
 {
-    
+
     protected $config;
-    
-    public function __construct($config = array())
+
+    /**
+     * Memory constructor.
+     * @param array|object $config
+     */
+    public function __construct($config = [])
     {
-        $this->config = new ArrayHelper($config);
+        $this->config = new ConfigHelper($config);
     }
-    
-    public function write($name, $value)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function write(string $name, $value) : bool
     {
         return $this->config->set($name, $value);
     }
-    
-    public function read($name, $default = null)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function read(string $name, $default = null)
     {
         return $this->config->get($name, $default);
     }
-    
-    public function has($name)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has(string $name) : bool
     {
         return $this->config->has($name);
     }
-    
-    public function delete($name)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete(string $name) : bool
     {
         return $this->config->delete($name);
     }
