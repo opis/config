@@ -3,7 +3,7 @@
  * Opis Project
  * http://opis.io
  * ===========================================================================
- * Copyright 2014-2015 Marius Sarca
+ * Copyright 2014-2016 Marius Sarca
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,56 +20,72 @@
 
 namespace Opis\Config\Storage;
 
-use Opis\Config\StorageInterface;
+use Opis\Config\ConfigInterface;
 
-class DualStorage implements StorageInterface
+class DualConfig implements ConfigInterface
 {
-  
+
+    /** @var ConfigInterface Primary storage */
     protected $primary;
-    
+
+    /** @var ConfigInterface Secondary storage */
     protected $secondary;
-    
-    protected $dummy;
-    
+
+    /** @var bool Auto-sync storages */
     protected $autoSync;
-  
-    public function __construct(StorageInterface $primary, StorageInterface $secondary, $autosync = true)
+
+    /**
+     * DualConfig constructor.
+     * @param ConfigInterface $primary
+     * @param ConfigInterface $secondary
+     * @param bool $autosync
+     */
+    public function __construct(ConfigInterface $primary, ConfigInterface $secondary, bool $autosync = true)
     {
         $this->primary = $primary;
         $this->secondary = $secondary;
         $this->autoSync = $autosync;
-        $this->dummy = spl_object_hash($this) . ':' . uniqid();
     }
-  
-    public function write($name, $value)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function write(string $name, $value) : bool
     {
         $this->primary->write($name, $value);
         $this->secondary->write($name, $value);
     }
-    
-    public function read($name, $default = null)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function read(string $name, $default = null)
     {
-        $val = $this->primary->read($name, $this->dummy);
-        
-        if ($val === $this->dummy)
-        {
+        $val = $this->primary->read($name, $this);
+
+        if ($val === $this) {
             $val = $this->secondary->read($name, $default);
-            
-            if ($this->autoSync)
-            {
+
+            if ($this->autoSync) {
                 $this->primary->write($name, $val);
             }
         }
-        
+
         return $val;
     }
-    
-    public function has($name)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has(string $name) : bool
     {
         return $this->primary->has($name) || $this->secondary->has($name);
     }
-    
-    public function delete($name)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete(string $name) : bool
     {
         $p = $this->primary->delete($name);
         $s = $this->secondary->delete($name);
