@@ -134,10 +134,10 @@ class ConfigHelper
         }
 
         if (is_object($config)) {
-            if (!isset($config->{$key})) {
+            if (!isset($config->{$last})) {
                 return false;
             }
-            unset($config->{$key});
+            unset($config->{$last});
             return true;
         }
 
