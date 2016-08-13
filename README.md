@@ -1,5 +1,6 @@
 Opis Config
 ===========
+[![Build Status](https://travis-ci.org/opis/config.svg?branch=master)](https://travis-ci.org/opis/config)
 [![Latest Stable Version](https://poser.pugx.org/opis/config/version.png)](https://packagist.org/packages/opis/config)
 [![Latest Unstable Version](https://poser.pugx.org/opis/config/v/unstable.png)](//packagist.org/packages/opis/config)
 [![License](https://poser.pugx.org/opis/config/license.png)](https://packagist.org/packages/opis/config)
@@ -11,10 +12,6 @@ that provides developers an API which allows them to work with configurations in
 no matter where the configurations are stored.
 
 The supported backend storages are: File, JSON, PHPFile, Memory, DualStorage.
-
-##### Important!
-
-You can install an additional storage adapter, for SQL databases, by using the optional [Opis Storages](https://github.com/opis/storages) package.
 
 ### License
 
