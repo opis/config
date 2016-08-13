@@ -1,5 +1,17 @@
 CHANGELOG
 ---------
+### v3.0.x-dev
+
+* Removed support for PHP 5.x. Now it supports only PHP 7.0.*
+* Removed `Opis\Config\Config` class
+* Removed `Opis\Config\ArrayHelper` class
+* Removed `Opis\Config\Storage\Mongo` class
+* Removed `Opis\Config\Storage\MongoArray` class
+* Removed `Opis\Config\StorageInterface` interface
+* Added `Opis\Config\ConfigInterface` interface
+* Added `Opis\Config\ConfigHelper` class
+* Updated all storage classes to reflect changes.
+
 ### v2.1.2, 2016.07.13
 
 * Fixed a potential bug in `Opis\Config\Storage\File::fileWrite` method
