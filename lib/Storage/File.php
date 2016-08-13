@@ -3,7 +3,7 @@
  * Opis Project
  * http://opis.io
  * ===========================================================================
- * Copyright 2014-2015 Marius Sarca
+ * Copyright 2014-2016 Marius Sarca
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,58 +21,72 @@
 namespace Opis\Config\Storage;
 
 use RuntimeException;
-use Opis\Config\ArrayHelper;
-use Opis\Config\StorageInterface;
+use Opis\Config\ConfigHelper;
+use Opis\Config\ConfigInterface;
 
-class File implements StorageInterface
+class File implements ConfigInterface
 {
+    /** @var string */
     protected $path;
-    
+
+    /** @var string */
     protected $prefix;
-    
+
+    /** @var string */
     protected $extension;
-    
-    protected $cache = array();
-    
-    public function __construct($path, $prefix = '', $extension = 'conf')
+
+    /** @var array */
+    protected $cache = [];
+
+    /**
+     * File constructor.
+     * @param string $path
+     * @param string $prefix
+     * @param string $extension
+     */
+    public function __construct(string $path, string $prefix = '', string $extension = 'conf')
     {
         $this->path = rtrim($path, '/');
         $this->prefix = trim($prefix, '.');
         $this->extension = trim($extension, '.');
-        
-        if($this->prefix !== '')
-        {
+
+        if ($this->prefix !== '') {
             $this->prefix .= '.';
         }
-        
-        if($this->extension !== '')
-        {
+
+        if ($this->extension !== '') {
             $this->extension = '.' . $this->extension;
         }
-        
-        if(!is_dir($this->path) && !@mkdir($this->path, 0775, true))
-        {
-            throw new RuntimeException(vsprintf("Config directory ('%s') does not exist.", array($this->path)));
+
+        if (!is_dir($this->path) && !@mkdir($this->path, 0775, true)) {
+            throw new RuntimeException(vsprintf("Config directory ('%s') does not exist.", [$this->path]));
         }
-        
-        if(!is_writable($this->path) || !is_readable($this->path))
-        {
-            throw new RuntimeException(vsprintf("Config directory ('%s') is not writable or readable.", array($this->path)));
+
+        if (!is_writable($this->path) || !is_readable($this->path)) {
+            throw new RuntimeException(vsprintf("Config directory ('%s') is not writable or readable.", [$this->path]));
         }
-        
+
     }
-    
-    protected function configFile($key)
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    protected function configFile(string $key) : string
     {
         return $this->path . '/' . $this->prefix . $key . $this->extension;
     }
-    
-    protected function fileWrite(&$file, &$data)
+
+    /**
+     * @param string $file
+     * @param string $data
+     */
+    protected function fileWrite(string &$file, string &$data)
     {
         $chmod = !file_exists($file);
         $fh = fopen($file, 'c');
         flock($fh, LOCK_EX);
-        if($chmod){
+        if ($chmod) {
             chmod($file, 0774);
         }
         ftruncate($fh, 0);
@@ -80,121 +94,127 @@ class File implements StorageInterface
         flock($fh, LOCK_UN);
         fclose($fh);
     }
-    
-    protected function readConfig($file)
+
+    /**
+     * @param string $file
+     * @return mixed
+     */
+    protected function readConfig(string $file)
     {
         return unserialize(file_get_contents($file));
     }
-    
-    protected function writeConfig($file, array $config)
+
+    /**
+     * @param string $file
+     * @param array|object $config
+     */
+    protected function writeConfig(string $file, $config)
     {
         $config = serialize($config);
         $this->fileWrite($file, $config);
     }
-    
-    public function write($name, $value)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function write(string $name, $value) : bool
     {
         $path = explode('.', $name);
         $key = $path[0];
         $file = $this->configFile($key);
-        
-        if(!isset($this->cache[$key]))
-        {
-            if(file_exists($file))
-            {
-                $this->cache[$key] = new ArrayHelper($this->readConfig($file));
+
+        if (!isset($this->cache[$key])) {
+            if (file_exists($file)) {
+                $this->cache[$key] = new ConfigHelper($this->readConfig($file));
+            } else {
+                $this->cache[$key] = new ConfigHelper();
             }
-            else
-            {
-                $this->cache[$key] = new ArrayHelper();
-            }
-            
+
         }
-        
+
         $this->cache[$key]->set($path, $value);
-        $this->writeConfig($file, $this->cache[$key]->toArray());
+        $this->writeConfig($file, $this->cache[$key]->getConfig());
     }
-    
-    public function read($name, $default = null)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function read(string $name, $default = null)
     {
         $path = explode('.', $name);
         $key = $path[0];
-        
-        if(!isset($this->cache[$key]))
-        {
+
+        if (!isset($this->cache[$key])) {
             $file = $this->configFile($key);
-            
-            if(!file_exists($file))
-            {
+
+            if (!file_exists($file)) {
                 return $default;
             }
-            
-            $this->cache[$key] = new ArrayHelper($this->readConfig($file));
-            
+
+            $this->cache[$key] = new ConfigHelper($this->readConfig($file));
+
         }
-        
+
         return $this->cache[$key]->get($path, $default);
     }
-    
-    public function has($name)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has(string $name) : bool
     {
         $path = explode('.', $name);
         $key = $path[0];
-        
-        if(!isset($this->cache[$key]))
-        {
+
+        if (!isset($this->cache[$key])) {
             $file = $this->configFile($key);
-            
-            if(!file_exists($file))
-            {
+
+            if (!file_exists($file)) {
                 return false;
             }
-            
-            $this->cache[$key] = new ArrayHelper($this->readConfig($file));
+
+            $this->cache[$key] = new ConfigHelper($this->readConfig($file));
         }
-        
+
         return $this->cache[$key]->has($path);
     }
-    
-    public function delete($name)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete(string $name) : bool
     {
         $path = explode('.', $name);
         $key = $path[0];
         $file = $this->configFile($key);
-        
-        if(count($path) === 1)
-        {
-            if(file_exists($file))
-            {
-                if(unlink($file))
-                {
+
+        if (count($path) === 1) {
+            if (file_exists($file)) {
+                if (unlink($file)) {
                     unset($this->cache[$key]);
                     return true;
                 }
-                
+
                 return false;
             }
-            
+
             return false;
         }
-        
-        if(!isset($this->cache[$key]))
-        {   
-            if(!file_exists($file))
-            {
+
+        if (!isset($this->cache[$key])) {
+            if (!file_exists($file)) {
                 return false;
             }
-            
-            $this->cache[$key] = new ArrayHelper($this->readConfig($file));
+
+            $this->cache[$key] = new ConfigHelper($this->readConfig($file));
         }
-        
-        if($this->cache[$key]->delete($path))
-        {
-            $this->writeConfig($file, $this->cache[$key]->toArray());
+
+        if ($this->cache[$key]->delete($path)) {
+            $this->writeConfig($file, $this->cache[$key]->getConfig());
             return true;
         }
-        
+
         return false;
     }
-    
+
 }
