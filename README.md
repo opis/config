@@ -10,7 +10,7 @@ Configuration manager
 that provides developers an API which allows them to work with configurations in a standardised way,
 no matter where the configurations are stored.
 
-The supported backend storages are: File, JSON, Mongo, MongoArray, PHPFile, Memory, DualStorage.
+The supported backend storages are: File, JSON, PHPFile, Memory, DualStorage.
 
 ##### Important!
 
@@ -22,7 +22,7 @@ You can install an additional storage adapter, for SQL databases, by using the o
 
 ### Requirements
 
-* PHP 5.3.* or higher
+* PHP 7.0.* or higher
 
 ### Installation
 
@@ -31,7 +31,7 @@ This library is available on [Packagist](https://packagist.org/packages/opis/con
 ```json
 {
     "require": {
-        "opis/config": "^2.1.2"
+        "opis/config": "3.0.*@dev"
     }
 }
 ```
@@ -42,7 +42,7 @@ archive file, extract the content of the archive and include de `autoload.php` f
 
 ```php
 
-require_once 'path/to/config-2.1.2/autoload.php';
+require_once 'path/to/config-master/autoload.php';
 
 ```
 
