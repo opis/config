@@ -3,7 +3,7 @@
  * Opis Project
  * http://opis.io
  * ===========================================================================
- * Copyright 2014-2015 Marius Sarca
+ * Copyright 2014-2016 Marius Sarca
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,20 +22,33 @@ namespace Opis\Config\Storage;
 
 class PHPFile extends File
 {
-    
-    public function __construct($path, $prefix = '')
+
+    /**
+     * PHPFile constructor.
+     * @param string $path
+     * @param string $prefix
+     */
+    public function __construct(string $path, string $prefix = '')
     {
         parent::__construct($path, $prefix, 'php');
     }
-    
-    protected function readConfig($file)
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function readConfig(string $file)
     {
-        return include $file;
+        return include($file);
     }
-    
-    protected function writeConfig($file, array $config)
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function writeConfig(string $file, $config)
     {
-        $config = "<?php\n\rreturn " . preg_replace('/\s=>\s(\n\s+)array\s\(\n/', " => array (\n", var_export($config, TRUE)) . ';';
+        $config = var_export($config, true);
+        $config = str_replace('stdClass::__set_state', '(object)', $config);
+        $config = "<?php\n\rreturn " . $config . ';';
         $this->fileWrite($file, $config);
     }
 }
