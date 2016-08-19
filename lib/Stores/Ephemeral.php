@@ -20,7 +20,7 @@ namespace Opis\Config\Stores;
 use Opis\Config\ConfigInterface;
 use Opis\Config\ConfigHelper;
 
-class Memory implements ConfigInterface
+class Ephemeral implements ConfigInterface
 {
 
     protected $config;
