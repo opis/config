@@ -15,37 +15,54 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Config\Storage;
+namespace Opis\Config\Stores;
 
-class PHPFile extends File
+use Opis\Config\ConfigInterface;
+use Opis\Config\ConfigHelper;
+
+class Memory implements ConfigInterface
 {
 
+    protected $config;
+
     /**
-     * PHPFile constructor.
-     * @param string $path
-     * @param string $prefix
+     * Memory constructor.
+     * @param array|object $config
      */
-    public function __construct(string $path, string $prefix = '')
+    public function __construct($config = [])
     {
-        parent::__construct($path, $prefix, 'php');
+        $this->config = new ConfigHelper($config);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function readConfig(string $file)
+    public function write(string $name, $value) : bool
     {
-        return include($file);
+        return $this->config->set($name, $value);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function writeConfig(string $file, $config)
+    public function read(string $name, $default = null)
     {
-        $config = var_export($config, true);
-        $config = str_replace('stdClass::__set_state', '(object)', $config);
-        $config = "<?php\n\rreturn " . $config . ';';
-        $this->fileWrite($file, $config);
+        return $this->config->get($name, $default);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has(string $name) : bool
+    {
+        return $this->config->has($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete(string $name) : bool
+    {
+        return $this->config->delete($name);
     }
 }

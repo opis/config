@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Config\Storage;
+namespace Opis\Config\Stores;
 
 use Opis\Config\ConfigInterface;
 
