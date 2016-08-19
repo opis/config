@@ -19,7 +19,7 @@ namespace Opis\Config\Stores;
 
 use Opis\Config\ConfigInterface;
 
-class DualConfig implements ConfigInterface
+class DualStore implements ConfigInterface
 {
 
     /** @var ConfigInterface Primary storage */
