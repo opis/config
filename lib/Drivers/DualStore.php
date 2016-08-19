@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Config\Stores;
+namespace Opis\Config\Drivers;
 
 use Opis\Config\ConfigInterface;
 

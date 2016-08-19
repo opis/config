@@ -15,34 +15,54 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Config\Stores;
+namespace Opis\Config\Drivers;
 
-class JSON extends File
+use Opis\Config\ConfigInterface;
+use Opis\Config\ConfigHelper;
+
+class Ephemeral implements ConfigInterface
 {
+
+    protected $config;
+
     /**
-     * JSON constructor.
-     * @param string $path
-     * @param string $prefix
+     * Memory constructor.
+     * @param array|object $config
      */
-    public function __construct(string $path, string $prefix = '')
+    public function __construct($config = [])
     {
-        parent::__construct($path, $prefix, 'json');
+        $this->config = new ConfigHelper($config);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function readConfig(string $file)
+    public function write(string $name, $value) : bool
     {
-        return json_decode(file_get_contents($file));
+        return $this->config->set($name, $value);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function writeConfig(string $file, $config)
+    public function read(string $name, $default = null)
     {
-        $config = json_encode($config);
-        $this->fileWrite($file, $config);
+        return $this->config->get($name, $default);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has(string $name) : bool
+    {
+        return $this->config->has($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete(string $name) : bool
+    {
+        return $this->config->delete($name);
     }
 }

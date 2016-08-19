@@ -10,7 +10,8 @@ CHANGELOG
 * Removed `Opis\Config\StorageInterface` interface
 * Added `Opis\Config\ConfigInterface` interface
 * Added `Opis\Config\ConfigHelper` class
-* Updated all storage classes to reflect changes.
+* All classes under the `Opis\Config\Storage` namespace were moved under
+the `Opis\Config\Drivers` namespace
 
 ### v2.1.2, 2016.07.13
 

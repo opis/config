@@ -15,54 +15,37 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Config\Stores;
+namespace Opis\Config\Drivers;
 
-use Opis\Config\ConfigInterface;
-use Opis\Config\ConfigHelper;
-
-class Ephemeral implements ConfigInterface
+class PHPFile extends File
 {
 
-    protected $config;
-
     /**
-     * Memory constructor.
-     * @param array|object $config
+     * PHPFile constructor.
+     * @param string $path
+     * @param string $prefix
      */
-    public function __construct($config = [])
+    public function __construct(string $path, string $prefix = '')
     {
-        $this->config = new ConfigHelper($config);
+        parent::__construct($path, $prefix, 'php');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function write(string $name, $value) : bool
+    protected function readConfig(string $file)
     {
-        return $this->config->set($name, $value);
+        return include($file);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function read(string $name, $default = null)
+    protected function writeConfig(string $file, $config)
     {
-        return $this->config->get($name, $default);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function has(string $name) : bool
-    {
-        return $this->config->has($name);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function delete(string $name) : bool
-    {
-        return $this->config->delete($name);
+        $config = var_export($config, true);
+        $config = str_replace('stdClass::__set_state', '(object)', $config);
+        $config = "<?php\n\rreturn " . $config . ';';
+        $this->fileWrite($file, $config);
     }
 }

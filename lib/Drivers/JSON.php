@@ -15,19 +15,18 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Config\Stores;
+namespace Opis\Config\Drivers;
 
-class PHPFile extends File
+class JSON extends File
 {
-
     /**
-     * PHPFile constructor.
+     * JSON constructor.
      * @param string $path
      * @param string $prefix
      */
     public function __construct(string $path, string $prefix = '')
     {
-        parent::__construct($path, $prefix, 'php');
+        parent::__construct($path, $prefix, 'json');
     }
 
     /**
@@ -35,7 +34,7 @@ class PHPFile extends File
      */
     protected function readConfig(string $file)
     {
-        return include($file);
+        return json_decode(file_get_contents($file));
     }
 
     /**
@@ -43,9 +42,7 @@ class PHPFile extends File
      */
     protected function writeConfig(string $file, $config)
     {
-        $config = var_export($config, true);
-        $config = str_replace('stdClass::__set_state', '(object)', $config);
-        $config = "<?php\n\rreturn " . $config . ';';
+        $config = json_encode($config);
         $this->fileWrite($file, $config);
     }
 }

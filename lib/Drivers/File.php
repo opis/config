@@ -15,7 +15,7 @@
  * limitations under the License.
  * ============================================================================ */
 
-namespace Opis\Config\Stores;
+namespace Opis\Config\Drivers;
 
 use RuntimeException;
 use Opis\Config\ConfigHelper;
