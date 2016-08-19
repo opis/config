@@ -131,6 +131,7 @@ class File implements ConfigInterface
 
         $this->cache[$key]->set($path, $value);
         $this->writeConfig($file, $this->cache[$key]->getConfig());
+        return true;
     }
 
     /**

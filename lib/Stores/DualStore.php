@@ -49,8 +49,11 @@ class DualStore implements ConfigInterface
      */
     public function write(string $name, $value) : bool
     {
-        $this->primary->write($name, $value);
-        $this->secondary->write($name, $value);
+        if($this->primary->write($name, $value)){
+            return $this->secondary->write($name, $value);
+        }
+        
+        return false;
     }
 
     /**
