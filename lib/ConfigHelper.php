@@ -67,8 +67,9 @@ class ConfigHelper
     /**
      * @param array|string $name
      * @param mixed $value
+     * @return bool
      */
-    public function set($name, $value)
+    public function set($name, $value): bool 
     {
         $config = &$this->config;
         $path = is_array($name) ? $name : explode('.', $name);
@@ -95,6 +96,8 @@ class ConfigHelper
         } else {
             $config[$last] = $value;
         }
+        
+        return true;
     }
 
     /**
