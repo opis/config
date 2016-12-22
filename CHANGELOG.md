@@ -12,6 +12,7 @@ CHANGELOG
 * Added `Opis\Config\ConfigHelper` class
 * All classes under the `Opis\Config\Storage` namespace were moved under
 the `Opis\Config\Drivers` namespace
+* Source files were moved from `lib` to `src`
 
 ### v2.1.2, 2016.07.13
 
