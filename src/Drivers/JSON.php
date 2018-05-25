@@ -19,13 +19,20 @@ namespace Opis\Config\Drivers;
 
 class JSON extends File
 {
+    const DEFAULT_ENCODE_OPTIONS = JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES;
+
+    /** @var int */
+    protected $encodeOptions = 0;
+
     /**
      * JSON constructor.
      * @param string $path
      * @param string $prefix
+     * @param int $encode_options
      */
-    public function __construct(string $path, string $prefix = '')
+    public function __construct(string $path, string $prefix = '', int $encode_options = self::DEFAULT_ENCODE_OPTIONS)
     {
+        $this->encodeOptions = $encode_options;
         parent::__construct($path, $prefix, 'json');
     }
 
@@ -42,7 +49,7 @@ class JSON extends File
      */
     protected function writeConfig(string $file, $config)
     {
-        $config = json_encode($config);
+        $config = json_encode($config, $this->encodeOptions);
         $this->fileWrite($file, $config);
     }
 }
