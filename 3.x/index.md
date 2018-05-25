@@ -7,7 +7,7 @@ lib:
     name: opis/config
     version: 3.0.0
 ---
-# Config manager
+# Configuration management library
 
 **Opis Config** is a configuration management library, with support for multiple backend storage, 
 that provides developers an API which allows them to work with configurations in a standardised way, 
