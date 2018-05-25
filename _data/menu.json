@@ -1,0 +1,14 @@
+{
+    "3.x": [
+        {
+            "title": "Opis Config",
+            "pages": [
+                {
+                    "title": "About",
+                    "url": "/3.x/",
+                    "description": "About this library"
+                }
+            ]
+        }
+    ]
+}
